@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Generate QR Code</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+</head>
+<body>
+  <div class="container">
+    <h1> QR Code Generator</h1>
+    <P>This tool is created by John🎉 </P>
+    <form id="dataForm">
+      <label for="inputField">Enter a URL:</label>
+      <input type="text" id="inputField" name="inputField" required>
+      <button type="submit">Submit</button>
+    </form>
+    <div id="qrCodeContainer"></div>
+    <a href="qr_img.png" download="generate-qr"><button class="btn"><i class="fa fa-download"></i>  Download</button></a>
+
+    
+  
+    
+  </div>
+  
+  <script>
+    document.getElementById('dataForm').addEventListener('submit', async function(event) {
+      event.preventDefault(); // Prevent the default form submission
+
+      const inputField = document.getElementById('inputField').value;
+
+      try {
+        const response = await fetch('http://localhost:3000/generate-qr', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ url: inputField })
+        });
+
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+
+        const result = await response.json();
+        document.getElementById('qrCodeContainer').innerHTML = `<img src="data:image/png;base64,${result.qrCode}" alt="QR Code">`;
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    });
+  </script>
+</body>
+
+</html>
